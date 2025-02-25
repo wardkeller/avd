@@ -1,13 +1,14 @@
 $TempPath = $env:TEMP
-$TempFolder = "$env:TEMP\Lawmaster"
+$TempFolder = "$TempPath\Lawmaster"
 
-if (-not (Get-item  $tempfolder)) { new-item -name "Lawmaster" -Path $TempPath -ItemType Directory }
+new-item -name "Lawmaster" -Path $TempPath -ItemType Directory -Force
 
 
 $VSTOR40 = @{
     Uri = 'https://download.microsoft.com/download/5/d/2/5d24f8f8-efbb-4b63-aa33-3785e3104713/vstor_redist.exe'
     OutFile = "$TempFolder\vstor_redist.exe"
 }
+
 Invoke-WebRequest @VSTOR40
 
 $install = Start-Process "$VSTOR40.OutFile" -ArgumentList '/q','/norestart' -PassThru -Wait -NoNewWindow

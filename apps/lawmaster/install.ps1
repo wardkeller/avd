@@ -28,3 +28,4 @@ new-item -name "$FolderName" -Path "$TempPath" -ItemType Directory -Force
     if ($install.ExitCode -ne 0) { throw "error installing $($_.OutFile)!"}
 }
 
+exit 0

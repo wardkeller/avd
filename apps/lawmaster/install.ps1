@@ -1,19 +1,10 @@
+$FolderName = 'Lawmaster'
+
 $TempPath = $env:TEMP
-$TempFolder = "$TempPath\Lawmaster"
+$TempFolder = "$TempPath\$FolderName"
+$ProgressPreference = 'SilentlyContinue'
 
-new-item -name "Lawmaster" -Path $TempPath -ItemType Directory -Force
-
-
-$VSTOR40 = @{
-    Uri = 'https://download.microsoft.com/download/5/d/2/5d24f8f8-efbb-4b63-aa33-3785e3104713/vstor_redist.exe'
-    OutFile = "$TempFolder\vstor_redist.exe"
-}
-
-Invoke-WebRequest @VSTOR40
-
-$install = Start-Process "$VSTOR40.OutFile" -ArgumentList '/q','/norestart' -PassThru -Wait -NoNewWindow
-
-if ($install.ExitCode -ne 1) { throw 'error installing vsto redistributable!'}
+new-item -name "$FolderName" -Path "$TempPath" -ItemType Directory -Force
 
 @(
     @{
@@ -34,6 +25,6 @@ if ($install.ExitCode -ne 1) { throw 'error installing vsto redistributable!'}
  ) | ForEach-Object {
     Invoke-WebRequest -UseBasicParsing -Uri $_.Uri -OutFile $_.OutFile
     $install = Start-Process 'msiexec.exe' -ArgumentList '/i',"$($_.OutFile)","/qn" -Wait -PassThru -NoNewWindow
-    if ($install.ExitCode -ne 1) { throw "error installing $($_.OutFile)!"}
+    if ($install.ExitCode -ne 0) { throw "error installing $($_.OutFile)!"}
 }
 
